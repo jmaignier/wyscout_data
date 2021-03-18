@@ -1,0 +1,7 @@
+streamlit==0.70.0
+pandas==1.1.4
+numpy==1.18.1
+plotly==4.9.0
+matplotlib==3.2.2
+joblib==0.14.1
+PIL==7.2.0
