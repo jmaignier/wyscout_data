@@ -21,15 +21,497 @@ import joblib
 
 from plot_functions_events import plot_pitch,get_match_infos
 ## Visu
-
-def remove_accents(x):
-    return unidecode(str(x).encode().decode('unicode_escape'))
-
 def angle_calcul(p1,p2,p3):
     u = (p2[0]-p1[0],p2[1]-p1[1])
     v = (p3[0]-p1[0],p3[1]-p1[1])
     rad = (u[0]*v[0]+u[1]*v[1])/(np.sqrt(u[0]**2+u[1]**2)*np.sqrt(v[0]**2+v[1]**2))
     return math.degrees(math.acos(rad))
+
+def time_out_in(playerId,list):
+    for i in range(len(list)):
+        if (playerId == list[i]['playerOut'] or playerId == list[i]['playerIn']):
+            return list[i]['minute']
+    else:
+        return np.nan
+
+def remove_accents(x):
+    return unidecode(str(x).encode('utf-8').decode('unicode escape'))
+
+def plot_pitch(fig):
+    try:
+        for row_idx, row_figs in enumerate(fig._grid_ref):
+
+            for col_idx, col_fig in enumerate(row_figs):
+                #field
+                
+                fig.add_shape(type="rect",
+                    xref="x", yref="y",
+                    x0=-52.5, y0=-34, x1=52.5, y1=34,
+                    line_color="white",
+                    fillcolor='#3B782F',
+                    opacity=0.3,
+                    row=row_idx+1, col=col_idx+1
+                    )
+                
+                #middle round
+                fig.add_shape(type="circle",
+                    xref="x", yref="y",
+                    x0=-9.15, y0=-9.15, x1=9.15, y1=9.15,
+                    line_color="white",
+                    row=row_idx+1, col=col_idx+1
+                    )
+                #middle line
+                fig.add_shape(type="line",
+                    xref="x", yref="y",
+                    x0=0, y0=-34, x1=0, y1=34,
+                    line_color="white",
+                    row=row_idx+1, col=col_idx+1
+                    )
+                #surface de réparation
+                fig.add_shape(type="rect",
+                    xref="x", yref="y",
+                    x0=-52.5, y0=-34+13.85, x1=-52.5+16.5, y1=34-13.85,
+                    line_color="white",
+                    #fillcolor='#3B782F',
+                    #opacity=0.2,
+                    row=row_idx+1, col=col_idx+1
+                    )
+                fig.add_shape(type="rect",
+                    xref="x", yref="y",
+                    x0=52.5, y0=-34+13.85, x1=52.5-16.5, y1=34-13.85,
+                    line_color="white",
+                    #fillcolor='#3B782F',
+                    #opacity=0.2,
+                    row=row_idx+1, col=col_idx+1
+                    )
+
+                fig.add_shape(type="rect",
+                    xref="x", yref="y",
+                    x0=-52.5, y0=-34+24.85, x1=-52.5+5.5, y1=34-24.85,
+                    line_color="white",
+                    #fillcolor='#3B782F',
+                    #opacity=0.2,
+                    row=row_idx+1, col=col_idx+1
+                    )
+                fig.add_shape(type="rect",
+                      xref="x", yref="y",
+                      x0=52.5, y0=-34+24.85, x1=52.5-5.5, y1=34-24.85,
+                      line_color="white",
+                      #fillcolor='#3B782F',
+                      #opacity=0.2,
+                      row=row_idx+1, col=col_idx+1
+                      )
+                #goals
+                fig.add_shape(type="rect",
+                      xref="x", yref="y",
+                      x0=52.5, y0=-34+30.35, x1=52.5+2.44, y1=34-30.35,
+                      line_color="white",
+                      #fillcolor='#3B782F',
+                      #opacity=0.2,
+                      row=row_idx+1, col=col_idx+1
+                      )
+                fig.add_shape(type="rect",
+                      xref="x", yref="y",
+                      x0=-52.5-2.44, y0=-34+30.35, x1=-52.5, y1=34-30.35,
+                      line_color="white",
+                      #fillcolor='#3B782F',
+                      #opacity=0.2,
+                      row=row_idx+1, col=col_idx+1
+                      )
+                #penalty
+                fig.add_shape(type="circle",
+                        xref="x", yref="y",
+                        x0=-52.5+11.1, y0=-0.1, x1=-52.5+10.9, y1=0.1,
+                        fillcolor='white',
+                        line_color='white',
+                        row=row_idx+1, col=col_idx+1
+                        )
+                fig.add_shape(type="circle",
+                        xref="x", yref="y",
+                        x0=52.5-11.1, y0=-0.1, x1=52.5-10.9, y1=0.1,
+                        fillcolor='white',
+                        line_color='white',
+                        row=row_idx+1, col=col_idx+1
+                        )
+                #corner points
+                fig.add_shape(type="path",
+                            path="M 51.5,34 Q 51.5,33 52.5,33",
+                            line_color="white",
+                             row=row_idx+1, col=col_idx+1)
+                fig.add_shape(type="path",
+                            path="M 51.5,-34 Q 51.5,-33 52.5,-33",
+                            line_color="white",
+                             row=row_idx+1, col=col_idx+1)
+                fig.add_shape(type="path",
+                            path="M -51.5,34 Q -51.5,33 -52.5,33",
+                            line_color="white",
+                             row=row_idx+1, col=col_idx+1)
+                fig.add_shape(type="path",
+                            path="M -51.5,-34 Q -51.5,-33 -52.5,-33",
+                            line_color="white",
+                             row=row_idx+1, col=col_idx+1)
+                fig.add_shape(type="path",
+                            path="M -36,-6.9 Q -32.35,0 -36,6.9",
+                            line_color="white",
+                             row=row_idx+1, col=col_idx+1)
+                fig.add_shape(type="path",
+                            path="M 36,-6.9 Q 32.35,0 36,6.9",
+                            line_color="white",
+                             row=row_idx+1, col=col_idx+1)
+    except:
+        #field
+        fig.add_shape(type="rect",
+            xref="x", yref="y",
+            x0=-52.5, y0=-34, x1=52.5, y1=34,
+            line_color="white",
+            fillcolor='#3B782F',
+            opacity=0.3,
+            
+            )
+        #middle round
+        fig.add_shape(type="circle",
+            xref="x", yref="y",
+            x0=-9.15, y0=-9.15, x1=9.15, y1=9.15,
+            line_color="white",
+                    
+            )
+        #middle line
+        fig.add_shape(type="line",
+            xref="x", yref="y",
+            x0=0, y0=-34, x1=0, y1=34,
+            line_color="white",
+            
+            )
+        #surface de réparation
+        fig.add_shape(type="rect",
+            xref="x", yref="y",
+            x0=-52.5, y0=-34+13.85, x1=-52.5+16.5, y1=34-13.85,
+            line_color="white",
+            #fillcolor='#3B782F',
+            #opacity=0.2,
+            
+            )
+        fig.add_shape(type="rect",
+            xref="x", yref="y",
+            x0=52.5, y0=-34+13.85, x1=52.5-16.5, y1=34-13.85,
+            line_color="white",
+            #fillcolor='#3B782F',
+            #opacity=0.2,
+            
+            )
+
+        fig.add_shape(type="rect",
+            xref="x", yref="y",
+            x0=-52.5, y0=-34+24.85, x1=-52.5+5.5, y1=34-24.85,
+            line_color="white",
+            #fillcolor='#3B782F',
+            #opacity=0.2,
+            
+            )
+        fig.add_shape(type="rect",
+              xref="x", yref="y",
+              x0=52.5, y0=-34+24.85, x1=52.5-5.5, y1=34-24.85,
+              line_color="white",
+              #fillcolor='#3B782F',
+              #opacity=0.2,
+              
+              )
+        #goals
+        fig.add_shape(type="rect",
+              xref="x", yref="y",
+              x0=52.5, y0=-34+30.35, x1=52.5+2.44, y1=34-30.35,
+              line_color="white",
+              #fillcolor='#3B782F',
+              #opacity=0.2,
+              
+              )
+        fig.add_shape(type="rect",
+              xref="x", yref="y",
+              x0=-52.5-2.44, y0=-34+30.35, x1=-52.5, y1=34-30.35,
+              line_color="white",
+              #fillcolor='#3B782F',
+              #opacity=0.2,
+              
+              )
+        #penalty
+        fig.add_shape(type="circle",
+                xref="x", yref="y",
+                x0=-52.5+11.1, y0=-0.1, x1=-52.5+10.9, y1=0.1,
+                fillcolor='white',
+                line_color='white',
+                
+                )
+        fig.add_shape(type="circle",
+                xref="x", yref="y",
+                x0=52.5-11.1, y0=-0.1, x1=52.5-10.9, y1=0.1,
+                fillcolor='white',
+                line_color='white',
+                
+                )
+        #corner points
+        fig.add_shape(type="path",
+                    path="M 51.5,34 Q 51.5,33 52.5,33",
+                    line_color="white",
+                      
+                     )
+        fig.add_shape(type="path",
+                    path="M 51.5,-34 Q 51.5,-33 52.5,-33",
+                    line_color="white",
+                     
+                     )
+        fig.add_shape(type="path",
+                    path="M -51.5,34 Q -51.5,33 -52.5,33",
+                    line_color="white",
+                     
+                     )
+        fig.add_shape(type="path",
+                    path="M -51.5,-34 Q -51.5,-33 -52.5,-33",
+                    line_color="white",
+                     
+                     )
+        fig.add_shape(type="path",
+                    path="M -36,-6.9 Q -32.35,0 -36,6.9",
+                    line_color="white",
+                     
+                     )
+        fig.add_shape(type="path",
+                    path="M 36,-6.9 Q 32.35,0 36,6.9",
+                    line_color="white",
+                     
+                     )
+
+    fig.update_yaxes(matches=None, showticklabels=False)
+    fig.update_xaxes(matches=None, showticklabels=False)
+    try :
+        fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
+    except:
+        pass
+    
+    
+    return fig
+    
+
+def get_match_infos(matches,match_id,teams_id_name,teams_name_id,players,events,tags_id_name):
+    match_test = matches[matches['wyId']==match_id]
+    left_team = teams_id_name[int(list(match_test['teamsData'].iloc[0].keys())[0])]
+    right_team = teams_id_name[int(list(match_test['teamsData'].iloc[0].keys())[1])]
+    match_test['home_team'] = match_test['label'].apply(lambda x:x.split(',')[0].split('-')[0]).str.strip()
+    match_test['home_team_score'] = match_test['label'].apply(lambda x:x.split(',')[1].split('-')[0])
+    match_test['away_team'] = match_test['label'].apply(lambda x:x.split(',')[0].split('-')[1]).str.strip()
+    titulars = [dico['playerId'] for dico in match_test['teamsData'].iloc[0][list(match_test['teamsData'].iloc[0].keys())[0]]['formation']['lineup'] + match_test['teamsData'].iloc[0][list(match_test['teamsData'].iloc[0].keys())[1]]['formation']['lineup']]
+    substitutions = match_test['teamsData'].iloc[0][list(match_test['teamsData'].iloc[0].keys())[0]]['formation']['substitutions'] + match_test['teamsData'].iloc[0][list(match_test['teamsData'].iloc[0].keys())[1]]['formation']['substitutions']
+    
+    match_test['away_team_score']= match_test['label'].apply(lambda x:x.split(',')[1].split('-')[1])
+    match_test['winner'] = match_test['winner'].apply(lambda team:teams_id_name[team])
+    temp_players = pd.concat([pd.concat([pd.DataFrame(match_test['teamsData'].iloc[0][str(teams_name_id[team])]['formation']['lineup']),
+           pd.DataFrame(match_test['teamsData'].iloc[0][str(teams_name_id[team])]['formation']['bench'])])\
+                     for team in [left_team,right_team]]
+         ).reset_index(drop=True)
+    temp_players_bis = players.query(f"wyId=={temp_players['playerId'].unique().tolist()}")[['wyId','shortName','weight',
+                                                                      'height',
+                                                                      'role','foot',
+                                                                     ]]
+    temp_players_bis['shortName'] = temp_players_bis['shortName'].apply(remove_accents)
+    players_stats = pd.merge(temp_players_bis,temp_players,left_on='wyId',right_on='playerId').drop('wyId',axis=1)
+    players_stats['role'] = players_stats['role'].apply(lambda role:role['code3'])
+
+    match_events = events[events['matchId']==match_id]
+    df_events = match_events.drop(['id'],axis=1)
+    df_events['tags_name'] = df_events['tags'].apply(lambda x:[tags_id_name[o['id']] for o in x])
+    df_events['outcome'] = df_events['tags_name'].apply(lambda liste:'accurate' if 'accurate' in liste else 'not_accurate' if 'not accurate' in liste else np.nan)
+    df_events.loc[df_events['outcome'].isnull(),'result'] = df_events.loc[df_events['outcome'].isnull(),'tags_name'].apply(lambda x:'Goal' if 'Goal' in x else 'opportunity' if 'opportunity' in x else '')
+    df_events.loc[df_events['outcome'].notnull(),'result'] = df_events.loc[df_events['outcome'].notnull(),'tags_name'].apply(lambda x:'Goal' if 'Goal' in x else 'opportunity' if 'opportunity' in x else '')
+    
+    df_events.loc[df_events['result']=='Goal','tag'] = df_events.loc[df_events['result']=='Goal','tags_name'].apply(lambda x:str(x[1]).lower() if len(x)>1  else '')
+    df_events.loc[df_events['result']=='opportunity','tag'] = df_events.loc[df_events['result']=='opportunity','tags_name'].apply(lambda x:str(x[0]).lower() if len(x)>0  else '')
+    df_events.loc[(df_events['result']!='Goal')&(df_events['result']!='opportunity'),'tag'] = df_events.loc[(df_events['result']!='Goal')&(df_events['result']!='opportunity'),'tags_name'].apply(lambda x:x[0] if len(x)>0  else '')
+    
+    
+    #df_events.loc[df_events['outcome'].notnull(),'tag'] = df_events.loc[df_events['outcome'].notnull(),'tags_name'].apply(lambda x:x[0] if len(x)>1 else '')
+    
+    df_events['team'] = df_events['teamId'].apply(lambda idx:teams_id_name[idx])
+
+    match_stats =  pd.merge(df_events,players_stats,left_on='playerId',right_on='playerId')
+    match_stats['winner'] = match_stats['team'].apply(lambda x: 1 if match_test['winner'].values[0]==x else 0)
+    match_stats.loc[match_stats['tag']==match_stats['foot'],'good_foot'] = 'Yes'
+    match_stats.loc[match_stats['tag']!=match_stats['foot'],'good_foot'] = 'No'
+    ### Temps sur 90 minutes
+    match_stats.loc[match_stats['matchPeriod']=='1H','time'] = match_stats.loc[match_stats['matchPeriod']=='1H','eventSec'].apply(lambda x: pd.Timestamp(round(x),unit="s").time())
+    match_stats.loc[match_stats['matchPeriod']=='2H','time'] = match_stats.loc[match_stats['matchPeriod']=='2H','eventSec'].apply(lambda x: pd.Timestamp(45*60+round(x),unit="s").time())
+    match_stats['positions'] = match_stats['positions'].apply(lambda liste : [dico for dico in liste if (list(dico.values())!=[0,0]) & (list(dico.values())!=[100,100]) ])
+
+    ### Remettre de la bonne manière les coordonnées
+    match_stats.loc[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='1H'),'x'] = \
+    match_stats[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='1H')]['positions'].\
+    apply(lambda x:(x[0]['x'])*105/100-52.5 if len(x)!=0 else np.nan)
+
+    match_stats.loc[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='1H'),'y'] = \
+    match_stats[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='1H')]['positions'].\
+    apply(lambda x:(100-x[0]['y'])*68/100-34 if len(x)!=0 else np.nan)
+
+    match_stats.loc[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='1H'),'x'] = \
+    match_stats[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='1H')]['positions'].\
+    apply(lambda x:(100-x[0]['x'])*105/100-52.5 if len(x)!=0 else np.nan)
+
+    match_stats.loc[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='1H'),'y'] = \
+    match_stats[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='1H')]['positions'].\
+    apply(lambda x:(x[0]['y'])*68/100-34 if len(x)!=0 else np.nan)
+
+    match_stats.loc[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='2H'),'x'] = \
+    match_stats[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='2H')]['positions'].\
+    apply(lambda x:(100-x[0]['x'])*105/100-52.5 if len(x)!=0 else np.nan)
+
+    match_stats.loc[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='2H'),'y'] = \
+    match_stats[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='2H')]['positions'].\
+    apply(lambda x:(x[0]['y'])*68/100-34 if len(x)!=0 else np.nan)
+
+    match_stats.loc[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='2H'),'x'] = \
+    match_stats[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='2H')]['positions'].\
+    apply(lambda x:(x[0]['x'])*105/100-52.5 if len(x)!=0 else np.nan)
+
+    match_stats.loc[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='2H'),'y'] = \
+    match_stats[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='2H')]['positions'].\
+    apply(lambda x:(100-x[0]['y'])*68/100-34 if len(x)!=0 else np.nan)
+    
+    ###
+    match_stats.loc[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='1H'),'x_to'] = \
+    match_stats[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='1H')]['positions'].\
+    apply(lambda x:(x[1]['x'])*105/100-52.5 if len(x)>1 else np.nan)
+
+    match_stats.loc[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='1H'),'y_to'] = \
+    match_stats[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='1H')]['positions'].\
+    apply(lambda x:(100-x[1]['y'])*68/100-34 if len(x)>1 else np.nan)
+
+    match_stats.loc[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='1H'),'x_to'] = \
+    match_stats[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='1H')]['positions'].\
+    apply(lambda x:(100-x[1]['x'])*105/100-52.5 if len(x)>1 else np.nan)
+
+    match_stats.loc[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='1H'),'y_to'] = \
+    match_stats[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='1H')]['positions'].\
+    apply(lambda x:(x[1]['y'])*68/100-34 if len(x)>1 else np.nan)
+
+    match_stats.loc[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='2H'),'x_to'] = \
+    match_stats[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='2H')]['positions'].\
+    apply(lambda x:(100-x[1]['x'])*105/100-52.5 if len(x)>1 else np.nan)
+
+    match_stats.loc[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='2H'),'y_to'] = \
+    match_stats[(match_stats['team']==left_team)&(match_stats['matchPeriod']=='2H')]['positions'].\
+    apply(lambda x:(x[1]['y'])*68/100-34 if len(x)>1 else np.nan)
+
+    match_stats.loc[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='2H'),'x_to'] = \
+    match_stats[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='2H')]['positions'].\
+    apply(lambda x:(x[1]['x'])*105/100-52.5 if len(x)>1 else np.nan)
+
+    match_stats.loc[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='2H'),'y_to'] = \
+    match_stats[(match_stats['team']==right_team)&(match_stats['matchPeriod']=='2H')]['positions'].\
+    apply(lambda x:(100-x[1]['y'])*68/100-34 if len(x)>1 else np.nan)
+
+    match_stats['x'] = match_stats['x'].round()
+    match_stats['y'] = match_stats['y'].round()
+    match_stats['x_to'] = match_stats['x_to'].round()
+    match_stats['y_to'] = match_stats['y_to'].round()
+    
+    #### Délimiter attaque milieu défense
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team) & (match_stats['x']<=-22),"zone_from"] = 'defence'
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team) & (match_stats['x']>=22),"zone_from"] = 'attack'
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team) & (match_stats['x']<22) & (match_stats['x']>-22),"zone_from"] = 'middle'
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team) & (match_stats['x']>=22),"zone_from"] = 'defence'
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team) & (match_stats['x']<=-22),"zone_from"] = 'attack'
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team) & (match_stats['x']>-22) & (match_stats['x']<22),"zone_from"] = 'middle'
+    
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team) & (match_stats['x']>=22),"zone_from"] = 'defence'
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team) & (match_stats['x']<=-22),"zone_from"] = 'attack'
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team) & (match_stats['x']<22) & (match_stats['x']>-22),"zone_from"] = 'middle'
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team) & (match_stats['x']<=-22),"zone_from"] = 'defence'
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team) & (match_stats['x']>=22),"zone_from"] = 'attack'
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team) & (match_stats['x']<22) & (match_stats['x']>-22),"zone_from"] = 'middle'
+    
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team) & (match_stats['x_to']<=-22),"zone_to"] = 'defence'
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team) & (match_stats['x_to']>=22),"zone_to"] = 'attack'
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team) & (match_stats['x_to']<22) & (match_stats['x_to']>-22),"zone_to"] = 'middle'
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team) & (match_stats['x_to']>=22),"zone_to"] = 'defence'
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team) & (match_stats['x_to']<=-22),"zone_to"] = 'attack'
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team) & (match_stats['x_to']>-22) & (match_stats['x_to']<22),"zone_to"] = 'middle'
+    
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team) & (match_stats['x_to']>=22),"zone_to"] = 'defence'
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team) & (match_stats['x_to']<=-22),"zone_to"] = 'attack'
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team) & (match_stats['x_to']<22) & (match_stats['x_to']>-22),"zone_to"] = 'middle'
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team) & (match_stats['x_to']<=-22),"zone_to"] = 'defence'
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team) & (match_stats['x_to']>=22),"zone_to"] = 'attack'
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team) & (match_stats['x_to']<22) & (match_stats['x_to']>-22),"zone_to"] = 'middle'
+    
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team),"distance_to_goal_from"] =\
+    np.sqrt((52.5-match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team),"x"])**2 + (0-match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team),"y"])**2)
+    
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team),"distance_to_goal_from"] =\
+    np.sqrt((-52.5-match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team),"x"])**2 + (0-match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team),"y"])**2)
+    
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team),"distance_to_goal_from"] =\
+    np.sqrt((-52.5-match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team),"x"])**2 + (0-match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team),"y"])**2)
+    
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team),"distance_to_goal_from"] =\
+    np.sqrt((52.5-match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team),"x"])**2 + (0-match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team),"y"])**2)
+   
+    match_stats["distance_to_goal_from"] = match_stats["distance_to_goal_from"].round()
+    
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team),"distance_to_goal_to"] =\
+    np.sqrt((52.5-match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team),"x_to"])**2 + (0-match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team),"y_to"])**2)
+
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team),"distance_to_goal_to"] =\
+    np.sqrt((-52.5-match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team),"x_to"])**2 + (0-match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team),"y_to"])**2)
+
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team),"distance_to_goal_to"] =\
+    np.sqrt((-52.5-match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team),"x_to"])**2 + (0-match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team),"y_to"])**2)
+
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team),"distance_to_goal_to"] =\
+    np.sqrt((52.5-match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team),"x_to"])**2 + (0-match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team),"y_to"])**2)
+    
+    match_stats["distance_to_goal_to"] = match_stats["distance_to_goal_to"].round()
+    
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team),"angle_from"] =\
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team),'positions'].\
+    apply(lambda x:angle_calcul(((x[0]['x'])*105/100-52.5,(100-x[0]['y'])*68/100-34),(52.5,3.65),(52.5,-3.65)) if len(x)!=0 else np.nan)
+
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team),"angle_from"] =\
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team),'positions'].\
+    apply(lambda x:angle_calcul(((100-x[0]['x'])*105/100-52.5,(x[0]['y'])*68/100-34),(-52.5,3.65),(-52.5,-3.65)) if len(x)!=0 else np.nan)
+
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team),"angle_from"] =\
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team),'positions'].\
+    apply(lambda x:angle_calcul(((100-x[0]['x'])*105/100-52.5,(x[0]['y'])*68/100-34),(-52.5,3.65),(-52.5,-3.65)) if len(x)!=0 else np.nan)
+    
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team),"angle_from"] =\
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team),'positions'].\
+    apply(lambda x:angle_calcul(((x[0]['x'])*105/100-52.5,(100-x[0]['y'])*68/100-34),(52.5,3.65),(52.5,-3.65)) if len(x)!=0 else np.nan)
+    
+    match_stats["angle_from"] = match_stats["angle_from"].round()
+    
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team),"angle_to"] =\
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==left_team),'positions'].\
+    apply(lambda x:angle_calcul(((x[1]['x'])*105/100-52.5,(100-x[1]['y'])*68/100-34),(52.5,3.65),(52.5,-3.65)) if len(x)>1 else np.nan)
+
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team),"angle_to"] =\
+    match_stats.loc[(match_stats['matchPeriod']=='1H') & (match_stats['team']==right_team),'positions'].\
+    apply(lambda x:angle_calcul(((100-x[1]['x'])*105/100-52.5,(x[1]['y'])*68/100-34),(-52.5,3.65),(-52.5,-3.65)) if len(x)>1 else np.nan)
+
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team),"angle_to"] =\
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==left_team),'positions'].\
+    apply(lambda x:angle_calcul(((100-x[1]['x'])*105/100-52.5,(x[1]['y'])*68/100-34),(-52.5,3.65),(-52.5,-3.65)) if len(x)>1 else np.nan)
+    
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team),"angle_to"] =\
+    match_stats.loc[(match_stats['matchPeriod']=='2H') & (match_stats['team']==right_team),'positions'].\
+    apply(lambda x:angle_calcul(((x[1]['x'])*105/100-52.5,(100-x[1]['y'])*68/100-34),(52.5,3.65),(52.5,-3.65)) if len(x)>1 else np.nan)
+    
+    match_stats["angle_to"] = match_stats["angle_to"].round()
+    match_stats['eventSec'] = match_stats['eventSec'].round()
+    #match_stats['total_sec'] = match_stats['matchPeriod'].apply(lambda x:int(x[0])-1 if (x=='1H' or x=='2H') else 0)*45*60 + match_stats['eventSec']
+    match_stats['titular'] = match_stats['playerId'].apply(lambda x: 'titular' if x in titulars else 'substitute')
+    match_stats['color'] = match_stats['team'].apply(lambda x:'darkred' if x=='Liverpool' else 'slategrey')
+    
+    return match_test,match_stats.sort_values(by=['time']).reset_index(drop=True)
+    
+def remove_accents(x):
+    return unidecode(str(x).encode().decode('unicode_escape'))
 
 @st.cache(persist=True,suppress_st_warning=True)
 def get_data(league):
