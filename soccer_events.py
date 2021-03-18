@@ -19,7 +19,7 @@ import math
 from PIL import Image
 import joblib
 
-from plot_functions_events import plot_pitch,get_match_infos
+
 ## Visu
 def angle_calcul(p1,p2,p3):
     u = (p2[0]-p1[0],p2[1]-p1[1])
@@ -517,14 +517,14 @@ def remove_accents(x):
 def get_data(league):
 
     if league == 'Premier League':
-        matches = pd.read_json('/Users/jeremymaignier/Desktop/matches/matches_England.json')
-        events = pd.read_json('/Users/jeremymaignier/Desktop/events/events_England.json')
+        matches = pd.read_csv('https://raw.githubusercontent.com/jmaignier/wyscout_data/main/liv_matches.csv',index_col=0)
+        events = pd.read_csv('https://raw.githubusercontent.com/jmaignier/wyscout_data/main/liv_events.csv',index_col=0)
     
         
-    tags = pd.read_csv('/Users/jeremymaignier/Desktop/matches/tags2name.csv')
+    tags = pd.read_csv('/https://raw.githubusercontent.com/jmaignier/wyscout_data/main/tags2name.csv')
     tags_id_name = tags[['Tag','Label']].set_index('Tag').to_dict()['Label']
-    teams = pd.read_json('/Users/jeremymaignier/Desktop/matches/teams.json')
-    players=pd.read_json('/Users/jeremymaignier/Desktop/matches/players.json')
+    teams = pd.read_json('https://raw.githubusercontent.com/jmaignier/wyscout_data/main/teams.json')
+    players=pd.read_json('https://raw.githubusercontent.com/jmaignier/wyscout_data/main/players.json')
     teams['area'] = teams['area'].apply(lambda dico:dico['name'])
     teams['name'] = teams['name'].apply(lambda name : remove_accents(name))
     teams_id_name = teams[['wyId','name']].set_index('wyId').to_dict()['name']
