@@ -1065,7 +1065,8 @@ def main():
                     figure.plotly_chart(plot_pitch(fig))
                 
                 with st.beta_expander("XG"):
-                    filename = '/Users/jeremymaignier/Desktop/streamlit_tests/xg_model.sav'
+                                          
+                    filename = 'https://github.com/jmaignier/wyscout_data/blob/main/xg_model.sav?raw=true'
                     loaded_model = joblib.load(filename)
                     match_events.loc[(match_events['eventName']=='Shot')&(match_events['tag']=='Goal'),'Goal'] = 'Yes'
                     match_events['Goal'] = match_events['Goal'].fillna('No')
