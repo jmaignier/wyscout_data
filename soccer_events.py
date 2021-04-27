@@ -12,7 +12,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 from unidecode import unidecode
 import math
-from PIL import Image
 import joblib
 
 
@@ -747,13 +746,11 @@ st.markdown("""<head>
 </head>
   """,unsafe_allow_html=True)
 
-liv_logo = Image.open('/Users/jeremymaignier/Desktop/Photos/liv_fc_logo.png')
-width, height = liv_logo.size
-liv_logo = liv_logo.resize((int(width//2.8),int(height//2.8)),Image.ANTIALIAS)
+
 ####### MAIN
 def main():
     st.title("Liverpool matches analysis (season 2017/2018)")
-    st.sidebar.image(liv_logo)
+    
     MENU = st.sidebar.radio("MENU",['Introduction','Events Data',])
     
     if MENU == 'Introduction':
