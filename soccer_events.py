@@ -10,9 +10,6 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
-import matplotlib.pyplot as plt
-import datetime as dt
-from datetime import datetime
 from unidecode import unidecode
 from pylab import arccos
 import math
