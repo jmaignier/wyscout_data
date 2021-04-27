@@ -11,7 +11,6 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from unidecode import unidecode
-from pylab import arccos
 import math
 from PIL import Image
 import joblib
