@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run soccer_events.py
+web: sh setup.sh && streamlit run app.py

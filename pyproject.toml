@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "wyscout-data"
+version = "0.1.0"
+description = ""
+authors = ["jmaignier <jeremymaignier@live.fr>"]
+package-mode = false 
+
+[tool.poetry.dependencies]
+python = ">=3.13"
+numpy = "^2.3.0"
+pandas = "^2.3.0"
+unidecode = "^1.4.0"
+joblib = "^1.5.1"
+plotly = "^6.1.2"
+streamlit = "^1.46.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
