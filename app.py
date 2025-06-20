@@ -512,14 +512,14 @@ def remove_accents(x):
 def get_data(league):
 
     if league == 'Premier League':
-        matches = pd.read_csv('https://raw.githubusercontent.com/jmaignier/wyscout_data/main/liv_matches.csv',index_col=0)
-        events = pd.read_csv('https://raw.githubusercontent.com/jmaignier/wyscout_data/main/liv_events.csv',index_col=0)
+        matches = pd.read_csv('https://raw.githubusercontent.com/jmaignier/wyscout_data/data/liv_matches.csv',index_col=0)
+        events = pd.read_csv('https://raw.githubusercontent.com/jmaignier/wyscout_data/data/liv_events.csv',index_col=0)
     
         
-    tags = pd.read_csv('/https://raw.githubusercontent.com/jmaignier/wyscout_data/main/tags2name.csv')
+    tags = pd.read_csv('/https://raw.githubusercontent.com/jmaignier/wyscout_data/data/tags2name.csv')
     tags_id_name = tags[['Tag','Label']].set_index('Tag').to_dict()['Label']
-    teams = pd.read_json('https://raw.githubusercontent.com/jmaignier/wyscout_data/main/teams.json')
-    players=pd.read_json('https://raw.githubusercontent.com/jmaignier/wyscout_data/main/players.json')
+    teams = pd.read_json('https://raw.githubusercontent.com/jmaignier/wyscout_data/data/teams.json')
+    players=pd.read_json('https://raw.githubusercontent.com/jmaignier/wyscout_data/data/players.json')
     teams['area'] = teams['area'].apply(lambda dico:dico['name'])
     teams['name'] = teams['name'].apply(lambda name : remove_accents(name))
     teams_id_name = teams[['wyId','name']].set_index('wyId').to_dict()['name']
